@@ -1,4 +1,6 @@
 local_settings.py
+*.dat
+*/*.dat
 *.log
 */*.log
 *.pdf
