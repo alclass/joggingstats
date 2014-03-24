@@ -56,7 +56,11 @@ class PointTime(object):
     raise TypeError, 't (=%s) should either be a string in the form <min>h<sec> or it should have a datetime.time type,' %str(t)
 
   def __str__(self):
-    outstr = u'%s'  %str(self.location)
+    try:
+      location = str(self.location)
+    except UnicodeEncodeError:
+      location = 'UnicodeEncodeError'
+    outstr = u'%s' %location 
     outstr += u' às %s' %(str(self.t))
     if self.temperature != None:
       outstr += ' : Temper %dC' %(self.temperature)
@@ -92,7 +96,12 @@ class PointRange(object):
     return '<duration>'
 
   def __str__(self):
-    outstr = u'%s até %s (duration:%s)' %(str(self.pt1), str(self.pt2), str(self.get_duration()))
+    try:
+      pt1_str = str(self.pt1)
+      pt2_str = str(self.pt2)
+    except UnicodeEncodeError:
+      pt1_str = pt2_str = 'UnicodeEncodeError'
+    outstr = u'%s até %s (duration:%s)' %(pt1_str, pt2_str, str(self.get_duration()))
     return outstr
 
 class WaitTime(PointRange):
@@ -130,14 +139,25 @@ class Transport(object):
     self.comment = comment
 
   def __str__(self):
-    outstr = u'Vehicle: %s' %str(self.transport_vehicle)
+    try:
+      vehicle = u'' + str(self.transport_vehicle)
+    except UnicodeEncodeError:
+      vehicle = 'UnicodeEncodeError'
+    outstr = u'Vehicle: %s' %vehicle
     if self.comment != None:
-      outstr += u' (Comment: %s)\n' %self.comment
+      try:
+        outstr += u'(Comment: %s)\n' %self.comment
+      except UnicodeDecodeError:
+        outstr += u'(Comment: %s)\n' %'UnicodeDecodeError' 
     else:
-      outstr += '\n'
+      outstr += u'\n'
     for i, point_time in enumerate(self.point_times):
       seq = i + 1
-      outstr += '\t%d %s\n' %(seq, str(point_time))
+      try:
+        pt_str = str(point_time)
+      except UnicodeEncodeError:
+        pt_str = 'UnicodeEncodeError' 
+      outstr += u'\t%d %s\n' %(seq, pt_str)
     return outstr
 
 class Exercise(PointRange):
@@ -147,7 +167,7 @@ class Exercise(PointRange):
     self.comment = comment
 
   def __str__(self):
-    outstr  = 'Exercise:\n'
+    outstr  = u'Exercise:\n'
     outstr += super(Exercise, self).__str__()
     return outstr
 
@@ -207,10 +227,15 @@ class Run(object):
       return
 
   def __str__(self):
-    outstr  = u'Parcours: %s\n'   %str(self.parcours)
+    try:
+      parcours_str = str(self.parcours)
+    except UnicodeEncodeError:
+      parcours_str = 'UnicodeEncodeError' 
+    outstr  = u'Parcours: %s\n' %parcours_str
     outstr += u'\tDuration: %s\n' %str(self.duration)
     outstr += u'\tN. Stops: %d\n' %self.nstops
-    outstr += u'\tWeight:   %d\n' %self.weight
+    if self.weight != None:
+      outstr += u'\tWeight:   %d\n' %self.weight
     if self.raintype:
       outstr += u'\tRain:   %s\n' %str(self.raintype)
     return outstr
@@ -249,14 +274,25 @@ class RunTripper(object):
     self.run = run
 
   def __str__(self):
-    outstr  = 'Runtrip:\n'
-    outstr += '\tDate: %s\n' %self.date 
-    outstr += '\tComments: %s\n' %self.comment
+    outstr  = u'Runtrip:\n'
+    outstr += u'\tDate: %s\n' %self.date 
+    try:
+      outstr += u'\tComments: %s\n' %self.comment
+    except UnicodeDecodeError:
+      outstr += u'\tComments: %s\n' %'UnicodeDecodeError' 
     for transport in self.transports:
-      outstr += '\t%s\n' %str(transport)
+      try:
+        transport_str = str(transport)
+      except UnicodeEncodeError:
+        transport_str = 'UnicodeEncodeError' 
+      outstr += u'\t%s\n' %transport_str
     for exercise in self.exercises:
-      outstr += '\t%s\n' %str(exercise)
-    outstr += '\nRun:\n\t%s\n' %str(self.run)
+      try:
+        exerc_str = str(exercise)
+      except UnicodeEncodeError:
+        exerc_str = 'UnicodeEncodeError' 
+      outstr += u'\t%s\n' %exerc_str
+    outstr += u'\nRun:\n\t%s\n' %str(self.run)
     return outstr
 
 

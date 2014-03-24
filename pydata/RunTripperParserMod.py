@@ -183,8 +183,10 @@ def process_datafile_abspath(datafile_abspath):
       comment = get_comments_by_vertical_bars_if_any(rem_line)
 
       parcours_token = None
+      parcours       = None
       mstr_duration  = None
       nstops         = None
+      weight         = None
       raintype       = None
 
       try:
@@ -202,6 +204,8 @@ def process_datafile_abspath(datafile_abspath):
         pass
       except TokenAndValueError: # may be raised by RainType(token)
         pass
+      if parcours == None:
+        parcours = Parcours.get_cancelled_parcours_obj()
       run = Run(parcours=parcours, duration=mstr_duration, nstops=nstops, weight=weight, raintype=raintype, comment=comment)
       tripper.set_run(run)
     elif line.startswith('e_trip'):

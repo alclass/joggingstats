@@ -34,7 +34,7 @@ class TokenAndValue(object):
     raise TokenAndValueError, 'Data Error: token %s is not registered in %s :: %s' %(token, str(self.__class__), str(o_dict))
 
   def __str__(self):
-    outstr = '[%s] %s'  %(self.token, self.value_text)
+    outstr = u'[%s] %s'  %(self.token, self.value_text)
     return outstr
 
 
@@ -42,16 +42,21 @@ class Location(TokenAndValue):
 
   LocationDict = {}
 
-  LocationDict['SFXA'] = u'Ponto São Franciso Xavier'
-  LocationDict['SPEN'] = u'Praça Saens Pena' 
-  LocationDict['URUG'] = u'Esquina Rua Uruguai'
-  LocationDict['CMSJ'] = u'Ponto do Colégio Marista São José'
-  LocationDict['USIN'] = u'Largo da Usina'
+
+  LocationDict['AFPE'] = u'Praça Afonso Pena'
   LocationDict['ALTO'] = u'Pracinha do Alto da Boa Vista'
+  LocationDict['CARH'] = u'Meio-caminho da Rua Carmela Dutra'
   LocationDict['CARM'] = u'Esquina Rua Carmela Dutra'
   LocationDict['CLOV'] = u'Esquina Rua Clóvis Bevilacqua'
+  LocationDict['CMSJ'] = u'Ponto do Colégio Marista São José'
+  LocationDict['FORM'] = u'Rua Conde de Bonfim altura do Bar Formiga'
   LocationDict['PARE'] = u'Esquina Rua Pareto'
+  LocationDict['SFXA'] = u'Ponto São Franciso Xavier'
+  LocationDict['SPEN'] = u'Praça Saens Pena' 
   LocationDict['SUJI'] = u'Minipraça apelidada Sujinho'
+  LocationDict['TSTE'] = u'R. Conde de Bonfim, altura Hospital Santa Terezinha'
+  LocationDict['URUG'] = u'Esquina Rua Uruguai'
+  LocationDict['USIN'] = u'Largo da Usina'
   
   def set_dict_name(self):
     self.dict_name = 'LocationDict'
@@ -64,14 +69,30 @@ class Parcours(TokenAndValue):
 
   ParcoursDict = {}
   
+  ParcoursDict['CANCELLED'] = u'CANCELLED'
   ParcoursDict['USIN_CLOV'] = u'Da Usina à Esquina da Rua Clóvis Bevilacqua (~4km)'
-  ParcoursDict['USIN_PARE'] = u'Da Usina à Esquina da Rua Pareto (~5km)'
   ParcoursDict['USIN_MARQ'] = u'Da Usina à Esquina da Rua Marquês de Valença (~6km)'
+  ParcoursDict['USIN_PARE'] = u'Da Usina à Esquina da Rua Pareto (~5km)'
+  ParcoursDict['USIN_ROCA'] = u'Da Usina à Esquina da Rua General Roca'
   ParcoursDict['ALTO_USIN'] = u'Da Pracinha do Alto à Usina (~5km)'
-
+  ParcoursDict['ALTO_CRVS'] = u'Da Pracinha do Alto à Curva S (~2,5km)'
+  
   def set_dict_name(self):
     self.dict_name = 'ParcoursDict'
 
+  @staticmethod
+  def get_cancelled_parcours_obj():
+    o = Parcours('CANCELLED')
+    o.CANCELLED = True
+    return o
+  
+  def is_cancelled(self):
+    try:
+      if self.CANCELLED:
+        pass
+    except AttributeError:
+      return False
+    return True
 
 class TransportVehicle(TokenAndValue):
   '''
@@ -81,9 +102,15 @@ class TransportVehicle(TokenAndValue):
   TransportVehicleDict = {}
   
   TransportVehicleDict['B301'] = u'Ônibus 301' 
+  TransportVehicleDict['B304'] = u'Ônibus 304' 
+  TransportVehicleDict['B311'] = u'Ônibus 311' 
   TransportVehicleDict['B333'] = u'Ônibus 333'
   TransportVehicleDict['B415'] = u'Ônibus 415'
   TransportVehicleDict['B426'] = u'Ônibus 426'
+  TransportVehicleDict['BMSU'] = u'Metrobus Saens Pena - Usina'
+  TransportVehicleDict['BMUS'] = u'Metrobus Usina - Saens Pena'
+  TransportVehicleDict['FOOT'] = u'A pé'
+  TransportVehicleDict['V_TB'] = u'Van Afonso Pena à Passarela da Barra'
 
   def set_dict_name(self):
     self.dict_name = 'TransportVehicleDict'
@@ -97,11 +124,13 @@ class RainType(TokenAndValue):
   RainTypeDict = {}
   
   RainTypeDict['RAIN_NR']   = u'No Rain.' 
+  RainTypeDict['RAIN_OWR']  = u'Oscillating Weak Rain.' 
+  RainTypeDict['RAIN_ONR']  = u'Oscillating Normal Rain.' 
   RainTypeDict['RAIN_AWR']  = u'After Weak Rain. Wet floor.'
   RainTypeDict['RAIN_ANR']  = u'After Normal Rain. Wet floor.'
   RainTypeDict['RAIN_ANR']  = u'After Pouring Rain. Wet floor.'
-  RainTypeDict['RAIN_WR']   = u'Weak Rain.'
-  RainTypeDict['RAIN_WWR']  = u'Windy Weak Rain.'
+  RainTypeDict['RAIN_WR']   = u'Weak/Light Rain.'
+  RainTypeDict['RAIN_WWR']  = u'Windy Weak/Light Rain.'
   RainTypeDict['RAIN_NR']   = u'Normal Rain.'
   RainTypeDict['RAIN_WNR']  = u'Windy Normal Rain.'
   RainTypeDict['RAIN_PR']   = u'Pouring Rain.'

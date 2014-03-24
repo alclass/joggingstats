@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+# local_settings.py
+
+
+import os
+
+
+APP_ABSPATH = '/home/dados/Sw3/SwDv/CompLang SwDv/PythonSwDv/DjangoSwDv/runtrips_django_et_al/'
+RUNDATAFILES_RELPATH = 'runtrips_app_data/rundatafiles/'
+RUNDATAFILES_ABSPATH = os.path.join(APP_ABSPATH, RUNDATAFILES_RELPATH)
+
+def get_all_rundatafiles_abspaths():
+  rundatafile_abspaths = []
+  for dirpath, _, filenames in os.walk(RUNDATAFILES_ABSPATH):
+    filenames.sort()
+    for filename in filenames:
+      file_abspath = os.path.join(dirpath, filename)
+      if os.path.isfile(file_abspath):
+        if filename.startswith('rundata_') and filename.endswith('.dat'):
+          rundatafile_abspaths.append(file_abspath)
+  return rundatafile_abspaths
