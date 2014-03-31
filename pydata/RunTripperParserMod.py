@@ -5,7 +5,7 @@ XmlSha1HexFileMod.py
 This module contains the XmlSha1HexFile class
 '''
 
-import datetime, os, sys
+import datetime, codecs, os, sys
 import __init__
 import local_settings as ls
 from RunTripperMod import Exercise
@@ -152,7 +152,8 @@ def look_ahead_section_and_return_exercise_obj(lines):
 
 trips = []
 def process_datafile_abspath(datafile_abspath):
-  lines = open(datafile_abspath).readlines()
+  f = codecs.open(datafile_abspath, 'r', 'utf-8')
+  lines = f.readlines()
   for i, line in enumerate(lines):
     line = line.lstrip(' \t').rstrip(' \t\r\n')
     if line == '':
@@ -214,12 +215,15 @@ def process_datafile_abspath(datafile_abspath):
 def read_rundata_txtfiles():
   datafile_abspaths = ls.get_all_rundatafiles_abspaths()
   for datafile_abspath in datafile_abspaths:
-    # print 'datafile_abspath', datafile_abspath
+    print 'datafile_abspath', datafile_abspath
     process_datafile_abspath(datafile_abspath)
   for tripper in trips:
     print 'Tripper'
     print '='*50
-    print tripper
+    try:
+      print tripper
+    except UnicodeEncodeError:
+      print 'UnicodeEncodeError from trip on', tripper.date 
 
 def process():
   read_rundata_txtfiles()
